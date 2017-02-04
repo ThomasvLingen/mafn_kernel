@@ -25,8 +25,10 @@ void mafn_term_write(const char* to_write, size_t size);
 void mafn_term_write_s(const char* to_write);
 void mafn_term_clear();
 
+void _mafn_term_clear_row(size_t row);
 void _mafn_term_inc_row();
 void _mafn_term_inc_column();
+void _mafn_term_scroll();
 
 size_t _get_video_mem_index(size_t x, size_t y);
 

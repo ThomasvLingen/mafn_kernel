@@ -20,10 +20,16 @@ void mafn_term_init()
 void mafn_term_clear()
 {
     for (size_t y = 0; y < VGA_HEIGHT; y++) {
-        for (size_t x = 0; x < VGA_WIDTH; x++) {
-            size_t video_mem_index = _get_video_mem_index(x, y);
-            _video_mem[video_mem_index] = get_vga_entry(' ', _video_mem_colour);
-        }
+        _mafn_term_clear_row(y);
+    }
+}
+
+
+void _mafn_term_clear_row(size_t row)
+{
+    for (size_t x = 0; x < VGA_WIDTH; x++) {
+        size_t video_mem_index = _get_video_mem_index(x, row);
+        _video_mem[video_mem_index] = get_vga_entry(' ', _video_mem_colour);
     }
 }
 
@@ -70,9 +76,11 @@ void mafn_term_write_s(const char* to_write)
 
 void _mafn_term_inc_row()
 {
-    _video_mem_row++;
-    if (_video_mem_row > VGA_HEIGHT) {
-        _video_mem_row = 0;
+    // Check if the incremented row would be more than the maximum row index
+    if (_video_mem_row + 1 > VGA_HEIGHT-1) {
+        _mafn_term_scroll();
+    } else {
+        _video_mem_row++;
     }
 }
 
@@ -84,4 +92,20 @@ void _mafn_term_inc_column()
 
         _mafn_term_inc_row();
     }
+}
+
+void _mafn_term_scroll()
+{
+    // Move everything one row upwards
+    for (size_t row = 1; row < VGA_HEIGHT; row++) {
+        for (size_t column = 0; column < VGA_WIDTH; column++) {
+            size_t source_index = _get_video_mem_index(column, row);
+            size_t target_index = _get_video_mem_index(column, row-1);
+
+            _video_mem[target_index] = _video_mem[source_index];
+        }
+    }
+
+    // Clear bottom row
+    _mafn_term_clear_row(VGA_HEIGHT-1);
 }
