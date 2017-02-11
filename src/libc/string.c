@@ -2,7 +2,7 @@
 // Created by mafn on 2/4/17.
 //
 
-#include "string.h"
+#include <string.h>
 
 size_t strlen(const char* str)
 {

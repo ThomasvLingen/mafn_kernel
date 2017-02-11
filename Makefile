@@ -1,58 +1,37 @@
 SILENT = @
 
-# Compiler
-CC = i686-elf-gcc 
-LD = $(CC)
+# Set project root, which will be used by recursive make calls
+PROJECT_ROOT = $(CURDIR)
+export PROJECT_ROOT
 
-# Assembler
-AS = i686-elf-as
+# Determine $ARCH
+include $(PROJECT_ROOT)/config.mk
+# Include architecture specific config (for compiler, linker and assembler)
+include $(PROJECT_ROOT)/make/arch/$(ARCH)/config.mk
 
-# Compiler flags
-# Wall = all warnings
-# Wextra = extra warnings
-INCLUDE_PATHS = -Isrc/ 
-COMPILER_FLAGS = -Wall -Wextra -std=gnu99 -ffreestanding $(INCLUDE_PATHS)
+# Submodule paths
+KERNEL_ROOT = $(PROJECT_ROOT)/src/kernel
+KERNEL_BIN = $(KERNEL_ROOT)/build/mafn_kernel.bin
+LIBC_ROOT = $(PROJECT_ROOT)/src/libc
 
-# Linker script
-LINKER_SCRIPT = linker.ld
+# Build path
+BUILD_PATH = $(PROJECT_ROOT)/build
 
-# Linker flags
-LINKER_FLAGS = -T $(LINKER_SCRIPT) -nostdlib -lgcc
+ifeq ($(ARCH),)
+$(error ARCH not set (does config.mk make sense?))
+endif
 
-# Files to compile
-SRC_PATH = src/
-SRC_C_FILES = $(shell find $(SRC_PATH) -name '*.c')
-SRC_ASM_FILES = $(shell find $(SRC_PATH) -name '*.s')
+all : mafn_kernel
 
-H_FILES = $(shell find $(SRC_PATH) -name '*.h')
-ALL_FILES = $(SRC_C_FILES) $(SRC_ASM_FILES) $(H_FILES)
-OBJ_FILES = $(SRC_C_FILES:.c=.o) $(SRC_ASM_FILES:.s=.o)
+libc :
+	@make -C $(LIBC_ROOT)
 
-# Path for the resulting file
-BUILD_PATH = build/
-PROGRAM_NAME = mafn_kernel.bin
-EXEC = $(BUILD_PATH)$(PROGRAM_NAME)
-
-# Compile stuff
-%.o : %.s
-	@echo AS $<
-	$(SILENT) $(AS) $< -o $@
-
-%.o : %.c
-	@echo CC $<
-	$(SILENT) $(CC) -c $< $(COMPILER_FLAGS) -o $@
-
-$(EXEC) : $(OBJ_FILES)
-	@echo
-	mkdir -p $(BUILD_PATH)
-	@echo LD $@
-	$(SILENT) $(LD) $(COMPILER_FLAGS) $(OBJ_FILES) $(LINKER_FLAGS) -o $(EXEC)
-	@echo
-
-all : $(EXEC)
+mafn_kernel : libc
+	@make -C $(KERNEL_ROOT)
+	cp $(KERNEL_BIN) $(PROJECT_ROOT)
 
 qemu_run : $(EXEC)
-	qemu-system-i386 -kernel $(EXEC)
+	qemu-system-i386 -kernel $(KERNEL_BIN)
 
 search_for_tabs: $(SRC_PATH)
 	grep -r '	' $(SRC_PATH)
@@ -63,5 +42,5 @@ tabs_to_spaces: $(ALL_FILES)
 .PHONY: clean
 clean:
 	@echo "Cleaning build"
-	rm -rf $(shell find $(SRC_PATH) -name '*.o')
-	rm -rf $(BUILD_PATH)*
+	@make clean -C $(KERNEL_ROOT)
+	@make clean -C $(LIBC_ROOT)

@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 
-#include "mafn_term.h"
+#include <kernel/mafn_term.h>
 
 void kernel_main()
 {

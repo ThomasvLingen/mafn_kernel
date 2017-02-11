@@ -2,9 +2,9 @@
 // Created by mafn on 2/4/17.
 //
 
-#include "mafn_term.h"
+#include <kernel/mafn_term.h>
 #include "mafn_vga.h"
-#include "lib/string.h"
+#include <string.h>
 
 volatile uint16_t* _video_mem = (volatile uint16_t*) 0xB8000;
 
