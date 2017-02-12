@@ -14,6 +14,7 @@ LIBK_LIB = $(LIBK_PATH)/build
 # Compiler flags
 INCLUDE_PATHS = -Iinclude -I$(LIBK_HEADERS)
 COMPILER_FLAGS = -g -Wall -Wextra -std=gnu99 -ffreestanding $(INCLUDE_PATHS)
+ASSEMBLER_FLAGS = -g
 
 # Linker script
 LINKER_SCRIPT = $(ARCH_DIR)/linker.ld
@@ -45,7 +46,7 @@ kernel : $(KERNEL_EXEC)
 # Compile stuff
 %.o : %.s
 	@echo AS $<
-	$(SILENT) $(AS) $< -o $@
+	$(SILENT) $(AS) $(ASSEMBLER_FLAGS) $< -o $@
 
 %.o : %.c
 	@echo CC $<
