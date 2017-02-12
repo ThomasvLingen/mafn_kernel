@@ -55,7 +55,6 @@ $(KERNEL_EXEC) : $(KERNEL_OBJ_FILES)
 	@echo
 	mkdir -p $(BUILD_PATH)
 	@echo LD $@
-	echo $(ARCH_DIR)
 	$(SILENT) $(LD) $(COMPILER_FLAGS) $(KERNEL_OBJ_FILES) $(LINKER_FLAGS) -o $(KERNEL_EXEC)
 	@echo
 
