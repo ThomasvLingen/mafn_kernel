@@ -13,7 +13,7 @@ LIBK_LIB = $(LIBK_PATH)/build
 
 # Compiler flags
 INCLUDE_PATHS = -Iinclude -I$(LIBK_HEADERS)
-COMPILER_FLAGS = -Wall -Wextra -std=gnu99 -ffreestanding $(INCLUDE_PATHS)
+COMPILER_FLAGS = -g -Wall -Wextra -std=gnu99 -ffreestanding $(INCLUDE_PATHS)
 
 # Linker script
 LINKER_SCRIPT = $(ARCH_DIR)/linker.ld

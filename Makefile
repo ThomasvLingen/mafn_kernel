@@ -30,8 +30,12 @@ mafn_kernel : libc
 	@make -C $(KERNEL_ROOT)
 	cp $(KERNEL_BIN) $(PROJECT_ROOT)
 
-qemu_run : $(EXEC)
+qemu_run : mafn_kernel
 	qemu-system-i386 -kernel $(KERNEL_BIN)
+
+qemu_debug : mafn_kernel
+	qemu-system-i386 -s -S -kernel $(KERNEL_BIN) &
+	gdb -tui $(KERNEL_BIN) -ex "target remote localhost:1234"
 
 search_for_tabs: $(SRC_PATH)
 	grep -r '	' $(SRC_PATH)

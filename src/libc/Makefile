@@ -5,7 +5,7 @@ SILENT = @
 
 # Compiler flags
 C_INCLUDE = -Iinclude/
-C_FLAGS = -Wall -Wextra -std=gnu99 -ffreestanding $(C_INCLUDE)
+C_FLAGS = -g -Wall -Wextra -std=gnu99 -ffreestanding $(C_INCLUDE)
 
 # Archiver flags
 AR_FLAGS = rcs
