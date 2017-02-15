@@ -48,3 +48,4 @@ clean:
 	@echo "Cleaning build"
 	@make clean -C $(KERNEL_ROOT)
 	@make clean -C $(LIBC_ROOT)
+	rm ./*.bin
