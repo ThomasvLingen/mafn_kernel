@@ -10,9 +10,8 @@ void kernel_main()
 {
     mafn_term_init();
 
-    mafn_term_write_s("Booting my kernel\n");
-
-    mafn_term_write_s("Entering infinite loop\n");
+    chardev_puts("Booting my kernel\n", &vgaterm);
+    chardev_puts("Entering infinite loop\n", &vgaterm);
 
     while (true) {
         asm("nop");
