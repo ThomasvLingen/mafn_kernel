@@ -2,7 +2,7 @@
 // Created by mafn on 2/4/17.
 //
 
-#include "mafn_vga.h"
+#include "vga.h"
 
 inline uint8_t get_vga_colour_entry(VGA_colour text, VGA_colour bg)
 {

@@ -4,11 +4,11 @@
 
 #include <stdbool.h>
 
-#include <kernel/mafn_term.h>
+#include <kernel/vgaterm.h>
 
 void kernel_main()
 {
-    mafn_term_init();
+    vgaterm_init();
 
     chardev_puts("Booting my kernel\n", &vgaterm);
     chardev_puts("Entering infinite loop\n", &vgaterm);
