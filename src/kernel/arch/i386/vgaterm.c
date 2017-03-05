@@ -3,6 +3,7 @@
 //
 
 #include <kernel/vgaterm.h>
+#include <kernel/numerics.h>
 #include "vga.h"
 
 volatile uint16_t* _video_mem = (volatile uint16_t*) 0xB8000;
@@ -58,6 +59,9 @@ void vgaterm_putchar(char to_write)
 
     vgaterm_put(to_write, _video_mem_colour, _video_mem_column, _video_mem_row);
     _vgaterm_inc_column();
+
+    // _column and _row now point to the next position to put a character
+    vgaterm_move_cursor_xy(_video_mem_column, _video_mem_row);
 }
 
 inline size_t _get_video_mem_index(size_t x, size_t y)
@@ -99,4 +103,15 @@ void _vgaterm_scroll()
 
     // Clear bottom row
     _vgaterm_clear_row(VGA_HEIGHT - 1);
+}
+
+void vgaterm_move_cursor_xy(size_t x, size_t y)
+{
+    vgaterm_move_cursor((uint16_t)_get_video_mem_index(x, y));
+}
+
+void vgaterm_move_cursor(uint16_t index)
+{
+    vga_write_register(VGA_REG_CURSORPOS_H, U16_HIGH(index));
+    vga_write_register(VGA_REG_CURSORPOS_L, U16_LOW(index));
 }

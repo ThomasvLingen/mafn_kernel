@@ -23,6 +23,8 @@ void vgaterm_init();
 void vgaterm_setcolour(uint8_t colour);
 void vgaterm_put(char to_write, uint8_t colour, size_t x, size_t y);
 void vgaterm_putchar(char to_write);
+void vgaterm_move_cursor_xy(size_t x, size_t y);
+void vgaterm_move_cursor(uint16_t index);
 void vgaterm_clear();
 
 void _vgaterm_clear_row(size_t row);

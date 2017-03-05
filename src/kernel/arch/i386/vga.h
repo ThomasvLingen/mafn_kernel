@@ -7,6 +7,14 @@
 #ifndef MAFN_KERNEL_MAFN_VGA_H
 #define MAFN_KERNEL_MAFN_VGA_H
 
+// VGA I/O ports
+#define VGA_PORT_INDEX 0x3D4
+#define VGA_PORT_VALUE 0x3D5
+
+// VGA register indexes
+#define VGA_REG_CURSORPOS_H 14
+#define VGA_REG_CURSORPOS_L 15
+
 typedef enum vga_colour {
     VGA_BLACK = 0,
     VGA_BLUE = 1,
@@ -28,5 +36,6 @@ typedef enum vga_colour {
 
 uint8_t get_vga_colour_entry(VGA_colour text, VGA_colour bg);
 uint16_t get_vga_entry(unsigned char c, uint8_t colour);
+void vga_write_register(uint8_t reg_index, uint8_t value);
 
 #endif //MAFN_KERNEL_MAFN_VGA_H
