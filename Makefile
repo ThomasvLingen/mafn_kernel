@@ -1,67 +1,64 @@
 SILENT = @
 
-# Compiler
-CC = i686-elf-gcc 
-LD = $(CC)
+# Set project root, which will be used by recursive make calls
+PROJECT_ROOT = $(CURDIR)
+export PROJECT_ROOT
 
-# Assembler
-AS = i686-elf-as
+# Determine $ARCH
+include $(PROJECT_ROOT)/config.mk
+# Include architecture specific config (for compiler, linker and assembler)
+include $(PROJECT_ROOT)/make/arch/$(ARCH)/config.mk
 
-# Compiler flags
-# Wall = all warnings
-# Wextra = extra warnings
-INCLUDE_PATHS = -Isrc/ 
-COMPILER_FLAGS = -Wall -Wextra -std=gnu99 -ffreestanding $(INCLUDE_PATHS)
+# Submodule paths
+KERNEL_ROOT = $(PROJECT_ROOT)/src/kernel
+KERNEL_BIN = $(KERNEL_ROOT)/build/mafn_kernel.bin
+LIBC_ROOT = $(PROJECT_ROOT)/src/libc
 
-# Linker script
-LINKER_SCRIPT = linker.ld
+# Build path
+BUILD_PATH = $(PROJECT_ROOT)/build
+IMAGE_PATH = $(PROJECT_ROOT)/image
 
-# Linker flags
-LINKER_FLAGS = -T $(LINKER_SCRIPT) -nostdlib -lgcc
+ISO_PATH = $(BUILD_PATH)/mafn_kernel.iso
 
-# Files to compile
-SRC_PATH = src/
-SRC_C_FILES = $(shell find $(SRC_PATH) -name '*.c')
-SRC_ASM_FILES = $(shell find $(SRC_PATH) -name '*.s')
+ifeq ($(ARCH),)
+$(error ARCH not set (does config.mk make sense?))
+endif
 
-H_FILES = $(shell find $(SRC_PATH) -name '*.h')
-ALL_FILES = $(SRC_C_FILES) $(SRC_ASM_FILES) $(H_FILES)
-OBJ_FILES = $(SRC_C_FILES:.c=.o) $(SRC_ASM_FILES:.s=.o)
+all : mafn_kernel
 
-# Path for the resulting file
-BUILD_PATH = build/
-PROGRAM_NAME = mafn_kernel.bin
-EXEC = $(BUILD_PATH)$(PROGRAM_NAME)
+libc :
+	@make -C $(LIBC_ROOT)
 
-# Compile stuff
-%.o : %.s
-	@echo AS $<
-	$(SILENT) $(AS) $< -o $@
+mafn_kernel : libc
+	@make -C $(KERNEL_ROOT)
+	cp $(KERNEL_BIN) $(PROJECT_ROOT)
 
-%.o : %.c
-	@echo CC $<
-	$(SILENT) $(CC) -c $< $(COMPILER_FLAGS) -o $@
+qemu_run : mafn_kernel
+	qemu-system-i386 -kernel $(KERNEL_BIN) -m 1024
 
-$(EXEC) : $(OBJ_FILES)
-	@echo
+qemu_debug : mafn_kernel
+	qemu-system-i386 -s -S -kernel $(KERNEL_BIN) -m 1024 &
+	gdb -tui $(KERNEL_BIN) -ex "target remote localhost:1234"
+
+iso: mafn_kernel $(ISO_PATH)
+
+$(BUILD_PATH):
 	mkdir -p $(BUILD_PATH)
-	@echo LD $@
-	$(SILENT) $(LD) $(COMPILER_FLAGS) $(OBJ_FILES) $(LINKER_FLAGS) -o $(EXEC)
-	@echo
 
-all : $(EXEC)
+$(IMAGE_PATH):
+	mkdir -p $(IMAGE_PATH)/boot/grub
 
-qemu_run : $(EXEC)
-	qemu-system-i386 -kernel $(EXEC)
-
-search_for_tabs: $(SRC_PATH)
-	grep -r '	' $(SRC_PATH)
-
-tabs_to_spaces: $(ALL_FILES)
-	sed -i 's/	/    /g' $(ALL_FILES)
+$(ISO_PATH): $(BUILD_PATH) $(IMAGE_PATH)
+	@echo "Building .iso"
+	cp grub.cfg $(IMAGE_PATH)/boot/grub/
+	cp mafn_kernel.bin $(IMAGE_PATH)/boot/
+	grub-mkrescue -o $(ISO_PATH) $(IMAGE_PATH)
 
 .PHONY: clean
 clean:
 	@echo "Cleaning build"
-	rm -rf $(shell find $(SRC_PATH) -name '*.o')
-	rm -rf $(BUILD_PATH)*
+	@make clean -C $(KERNEL_ROOT)
+	@make clean -C $(LIBC_ROOT)
+	rm -rf $(BUILD_PATH)
+	rm -rf $(IMAGE_PATH)
+	rm ./*.bin
