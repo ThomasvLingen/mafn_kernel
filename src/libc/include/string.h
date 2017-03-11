@@ -7,6 +7,7 @@
 
 #include <stddef.h>
 
-size_t strlen(const char* str);
+extern size_t strlen(const char* str);
+extern void* memset(void *ptr, int ch, size_t n);
 
 #endif //MAFN_KERNEL_STRING_H

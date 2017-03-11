@@ -4,6 +4,7 @@
 
 #include <kernel/GDT.h>
 #include <kernel/numerics.h>
+#include <string.h>
 
 struct GDT_entry mafn_kernel_gdt_entries[MAFN_KERNEL_SEGMENTS];
 struct GDT mafn_kernel_gdt = {
@@ -71,6 +72,8 @@ void mafn_kernel_gdt_init()
         .type        = TYPE_DATA,
         .granularity = GRAN_PAGE
     };
+
+    memset(mafn_kernel_gdt_entries, 0, sizeof(mafn_kernel_gdt_entries));
 
     mafn_kernel_gdt_add_entry(0, null_descriptor);
     mafn_kernel_gdt_add_entry(1, code_segment);

@@ -14,3 +14,15 @@ size_t strlen(const char* str)
 
     return length;
 }
+
+void* memset(void* ptr, int ch, size_t n)
+{
+    char to_set = (char)ch;
+    char* c_ptr = ptr;
+
+    for (size_t i = 0; i < n; i++) {
+        *c_ptr = to_set;
+    }
+
+    return ptr;
+}
