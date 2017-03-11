@@ -9,14 +9,13 @@ gdt_flush:
     mov eax, [esp+4]                       # Put the GDT address in EAX
     cli                                    # Disable interrupts to prevent the CPU from going apeshit about the fact that I'm mucking with internals
     lgdt [eax]                             # Load GDT from EAX
-    jmp MAFN_KERNEL_CODE_SEG:flush_regs    # Jump into our shiny new code segment
-
-flush_regs:
     mov ax, MAFN_KERNEL_DATA_SEG           # Put data segment index in AX
-    mov bx, ax
     mov ds, ax                             # Reload segment registers with AX
     mov es, ax                             # ...
     mov fs, ax                             # ...
     mov gs, ax                             # ...
     mov ss, ax                             # ...
+    jmp MAFN_KERNEL_CODE_SEG:flush_regs    # Jump into our shiny new code segment
+
+flush_regs:
     ret

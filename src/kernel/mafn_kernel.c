@@ -10,9 +10,12 @@
 void kernel_main()
 {
     vgaterm_init();
-    mafn_kernel_gdt_init();
 
-    chardev_puts("Booting my kernel\n", &vgaterm);
+    chardev_puts("Booting mafn kernel\n", &vgaterm);
+    chardev_puts("Initting GDT...", &vgaterm);
+    mafn_kernel_gdt_init();
+    chardev_puts(" [DONE]\n", &vgaterm);
+
     chardev_puts("Entering infinite loop\n", &vgaterm);
 
     while (true) {

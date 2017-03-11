@@ -7,8 +7,8 @@
 
 struct GDT_entry mafn_kernel_gdt_entries[MAFN_KERNEL_SEGMENTS];
 struct GDT mafn_kernel_gdt = {
-    .limit = MAFN_KERNEL_SEGMENTS - 1,
-    .base_addr = mafn_kernel_gdt_entries
+    .limit = (MAFN_KERNEL_SEGMENTS * sizeof(struct GDT)) - 1,
+    .base_addr = (uint32_t)mafn_kernel_gdt_entries
 };
 
 void gdt_entry_encode(struct GDT_entry* entry, uint8_t granularity, uint8_t type, uint32_t limit, uint32_t base)
@@ -46,7 +46,7 @@ void gdt_generate_entry(struct easy_GDT_entry* from, struct GDT_entry* to)
 void mafn_kernel_gdt_add_entry(uint16_t index, struct easy_GDT_entry new_entry)
 {
     if (index < MAFN_KERNEL_SEGMENTS) {
-        gdt_generate_entry(&new_entry, &mafn_kernel_gdt.base_addr[index]);
+        gdt_generate_entry(&new_entry, &mafn_kernel_gdt_entries[index]);
     }
 }
 
