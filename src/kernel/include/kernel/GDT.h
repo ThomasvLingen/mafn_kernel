@@ -93,7 +93,7 @@ struct GDT_entry {
 // This needs to be packed so GCC doesn't fuck with internal alignment of bytes
 struct GDT {
     uint16_t limit;
-    uint32_t base_addr;
+    struct GDT_entry* base_addr;
 } __attribute__((packed));
 
 struct easy_GDT_entry {
