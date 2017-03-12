@@ -7,14 +7,18 @@
 #include <kernel/print.h>
 #include <kernel/vgaterm.h>
 #include <kernel/GDT.h>
+#include <kernel/IDT.h>
 
 void kernel_main()
 {
     vgaterm_init();
 
     k_puts("Booting mafn kernel\n");
-    k_puts("Initting GDT...");
+    k_puts("Installing GDT...");
     mafn_kernel_gdt_init();
+    k_puts(" [DONE]\n");
+    k_puts("Installing IDT...");
+    mafn_kernel_idt_init();
     k_puts(" [DONE]\n");
 
     k_puts("Entering infinite loop\n");

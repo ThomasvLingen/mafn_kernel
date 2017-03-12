@@ -58,6 +58,9 @@
  */
 
 #define MAFN_KERNEL_SEGMENTS 16
+#define MAFN_KERNEL_CODE_SEGMENT 1
+#define MAFN_KERNEL_DATA_SEGMENT 2
+#define SEG_OFFSET(seg) (uint32_t)(seg << 3)
 
 // Access / type byte macros
 #define TYPE_AC(bit) (bit << 0)

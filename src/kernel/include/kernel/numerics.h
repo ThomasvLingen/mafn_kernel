@@ -9,6 +9,8 @@
 
 #define U16_HIGH(val) (uint8_t)(val >> 8)
 #define U16_LOW(val) (uint8_t)val
+#define U32_HIGH(val) (uint16_t)(val >> 16)
+#define U32_LOW(val) (uint16_t)val
 
 #define KiB_SIZE (1 << 10)
 #define MiB_SIZE (KiB_SIZE << 10)

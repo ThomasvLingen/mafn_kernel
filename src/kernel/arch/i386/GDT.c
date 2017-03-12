@@ -76,8 +76,8 @@ void mafn_kernel_gdt_init()
     memset(mafn_kernel_gdt_entries, 0, sizeof(mafn_kernel_gdt_entries));
 
     mafn_kernel_gdt_add_entry(0, null_descriptor);
-    mafn_kernel_gdt_add_entry(1, code_segment);
-    mafn_kernel_gdt_add_entry(2, data_segment);
+    mafn_kernel_gdt_add_entry(MAFN_KERNEL_CODE_SEGMENT, code_segment);
+    mafn_kernel_gdt_add_entry(MAFN_KERNEL_DATA_SEGMENT, data_segment);
 
     gdt_flush(&mafn_kernel_gdt);
 }
