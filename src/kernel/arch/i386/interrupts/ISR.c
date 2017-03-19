@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include <kernel/interrupts/PIC.h>
 #include <kernel/GDT.h>
 #include <kernel/print.h>
 #include <kernel/vgaterm.h>
@@ -37,6 +38,9 @@ void mafn_kernel_idt_add_entry(uint16_t index, struct easy_IDT_entry new_entry)
 
 void mafn_kernel_idt_init()
 {
+    // Remap IRQs
+    init_pic(MAFN_KERNEL_IRQ_START);
+
     memset(&mafn_kernel_idt, 0, sizeof(mafn_kernel_idt));
 
     _ADD_EXCEPTION(0);
