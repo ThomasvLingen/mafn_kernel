@@ -57,11 +57,6 @@
  *        Gr=1, limit is in 4KiB blocks (paging)
  */
 
-#define MAFN_KERNEL_SEGMENTS 16
-#define MAFN_KERNEL_CODE_SEGMENT 1
-#define MAFN_KERNEL_DATA_SEGMENT 2
-#define SEG_OFFSET(seg) (uint32_t)(seg << 3)
-
 // Access / type byte macros
 #define TYPE_AC(bit) (bit << 0)
 #define TYPE_RW(bit) (bit << 1)
@@ -105,6 +100,12 @@ struct easy_GDT_entry {
     uint8_t type;
     uint8_t granularity;
 };
+
+#define MAFN_KERNEL_SEGMENTS 16
+#define MAFN_KERNEL_CODE_SEGMENT 1
+#define MAFN_KERNEL_DATA_SEGMENT 2
+// This comes down to multiplying the segment with sizeof(GDT_entry)
+#define SEG_OFFSET(seg) (uint32_t)(seg << 3)
 
 extern struct GDT_entry mafn_kernel_gdt_entries[MAFN_KERNEL_SEGMENTS];
 extern struct GDT       mafn_kernel_gdt;
