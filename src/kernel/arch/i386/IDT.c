@@ -36,35 +36,42 @@ void idt_entry_encode(struct IDT_entry* entry, uint32_t base, uint16_t segment_s
 
 void idt_generate_entry(struct easy_IDT_entry* from, struct IDT_entry* to)
 {
-    // H = attr_L; L = type_L
-    uint8_t type_attr = ((from->attr & 0x0F) << 4) | (from->type & 0x0F);
-
-    idt_entry_encode(to, from->base, from->segment_selector, type_attr);
+    idt_entry_encode(to, (uint32_t)from->base, _SEG_OFFSET(from->segment_selector), _TYPE_ATTR(from->type, from->attr));
 }
 
-void mafn_kernel_idt_add_entry(uint16_t index, uint32_t base, uint16_t selector, uint8_t type, uint8_t attr)
+void mafn_kernel_idt_add_entry(uint16_t index, struct easy_IDT_entry new_entry)
 {
     if (index < MAFN_KERNEL_IDT_GATES) {
-        idt_entry_encode(&mafn_kernel_idt.base[index], base, selector, _TYPE_ATTR(type, attr));
+        idt_generate_entry(&new_entry, &mafn_kernel_idt.base[index]);
     }
 }
+
+// This is a helper macro for adding an exception since they're all so alike
+#define _ADD_EXCEPTION(EXC_NUMBER) mafn_kernel_idt_add_entry( \
+    EXC_NUMBER, \
+    (struct easy_IDT_entry) { \
+        .base = exception ## EXC_NUMBER, \
+        .segment_selector = MAFN_KERNEL_CODE_SEGMENT, \
+        .type = GATE_32_INT, .attr = ATTR_KERNEL \
+    } \
+)
 
 void mafn_kernel_idt_init()
 {
     memset(&mafn_kernel_idt, 0, sizeof(mafn_kernel_idt));
 
-    ADD_EXCEPTION(0);
-    ADD_EXCEPTION(1);
-    ADD_EXCEPTION(2);
-    ADD_EXCEPTION(3);
-    ADD_EXCEPTION(4);
-    ADD_EXCEPTION(5);
-    ADD_EXCEPTION(6);
-    ADD_EXCEPTION(7);
-    ADD_EXCEPTION(9);
-    ADD_EXCEPTION(16);
-    ADD_EXCEPTION(18);
-    ADD_EXCEPTION(20);
+    _ADD_EXCEPTION(0);
+    _ADD_EXCEPTION(1);
+    _ADD_EXCEPTION(2);
+    _ADD_EXCEPTION(3);
+    _ADD_EXCEPTION(4);
+    _ADD_EXCEPTION(5);
+    _ADD_EXCEPTION(6);
+    _ADD_EXCEPTION(7);
+    _ADD_EXCEPTION(9);
+    _ADD_EXCEPTION(16);
+    _ADD_EXCEPTION(18);
+    _ADD_EXCEPTION(20);
 
     idt_install(&mafn_kernel_idt);
 }

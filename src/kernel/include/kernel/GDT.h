@@ -105,7 +105,7 @@ struct easy_GDT_entry {
 #define MAFN_KERNEL_CODE_SEGMENT 1
 #define MAFN_KERNEL_DATA_SEGMENT 2
 // This comes down to multiplying the segment with sizeof(GDT_entry)
-#define SEG_OFFSET(seg) (uint32_t)(seg << 3)
+#define _SEG_OFFSET(seg) (uint16_t)(seg << 3)
 
 extern struct GDT_entry mafn_kernel_gdt_entries[MAFN_KERNEL_SEGMENTS];
 extern struct GDT       mafn_kernel_gdt;

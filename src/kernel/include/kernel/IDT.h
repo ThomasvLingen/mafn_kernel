@@ -82,7 +82,7 @@ struct IDT {
 } __attribute__((packed));
 
 struct easy_IDT_entry {
-    uint32_t base;
+    void* base;
     uint16_t segment_selector;
     uint8_t type;
     uint8_t attr;
@@ -95,7 +95,7 @@ extern void idt_entry_encode(struct IDT_entry* entry, uint32_t base, uint16_t se
 extern void idt_generate_entry(struct easy_IDT_entry* from, struct IDT_entry* to);
 extern void idt_install(struct IDT* new_idt);
 
-extern void mafn_kernel_idt_add_entry(uint16_t index, uint32_t base, uint16_t selector, uint8_t type, uint8_t attr);
+extern void mafn_kernel_idt_add_entry(uint16_t index, struct easy_IDT_entry new_entry);
 extern void mafn_kernel_idt_init();
 
 // Exceptions
@@ -109,7 +109,6 @@ struct isr_regs {
 
 extern void _mafn_kernel_fault_handler(struct isr_regs cpu_state);
 
-#define ADD_EXCEPTION(EXC_NUMBER) mafn_kernel_idt_add_entry(EXC_NUMBER, (uint32_t)exception ## EXC_NUMBER, SEG_OFFSET(MAFN_KERNEL_CODE_SEGMENT), GATE_32_INT, ATTR_KERNEL);
 extern void exception0(void);
 extern void exception1(void);
 extern void exception2(void);
