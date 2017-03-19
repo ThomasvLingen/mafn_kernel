@@ -108,5 +108,20 @@ struct isr_regs {
 };
 
 extern void _mafn_kernel_fault_handler(struct isr_regs cpu_state);
+
+#define ADD_EXCEPTION(EXC_NUMBER) mafn_kernel_idt_add_entry(EXC_NUMBER, (uint32_t)exception ## EXC_NUMBER, SEG_OFFSET(MAFN_KERNEL_CODE_SEGMENT), GATE_32_INT, ATTR_KERNEL);
 extern void exception0(void);
+extern void exception1(void);
+extern void exception2(void);
+extern void exception3(void);
+extern void exception4(void);
+extern void exception5(void);
+extern void exception6(void);
+extern void exception7(void);
+extern void exception9(void);
+extern void exception16(void);
+extern void exception18(void);
+extern void exception19(void);
+extern void exception20(void);
+
 #endif //MAFN_KERNEL_IDT_H

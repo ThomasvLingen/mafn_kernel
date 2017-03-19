@@ -8,6 +8,9 @@
 #include <kernel/GDT.h>
 
 #include <string.h>
+#include <stdbool.h>
+#include <kernel/vgaterm.h>
+#include "vga.h"
 
 struct IDT_entry mafn_kernel_idt_entries[MAFN_KERNEL_IDT_GATES];
 struct IDT       mafn_kernel_idt = {
@@ -50,18 +53,44 @@ void mafn_kernel_idt_init()
 {
     memset(&mafn_kernel_idt, 0, sizeof(mafn_kernel_idt));
 
-    mafn_kernel_idt_add_entry(0, (uint32_t)exception0, SEG_OFFSET(MAFN_KERNEL_CODE_SEGMENT), GATE_32_INT, ATTR_KERNEL);
+    ADD_EXCEPTION(0);
+    ADD_EXCEPTION(1);
+    ADD_EXCEPTION(2);
+    ADD_EXCEPTION(3);
+    ADD_EXCEPTION(4);
+    ADD_EXCEPTION(5);
+    ADD_EXCEPTION(6);
+    ADD_EXCEPTION(7);
+    ADD_EXCEPTION(9);
+    ADD_EXCEPTION(16);
+    ADD_EXCEPTION(18);
+    ADD_EXCEPTION(20);
 
     idt_install(&mafn_kernel_idt);
 }
 
+bool _is_exception(uint32_t interrupt_number)
+{
+    return interrupt_number < 20;
+}
+
 void _mafn_kernel_fault_handler(struct isr_regs cpu_state)
 {
-    // TODO: Write proper generic handler
-    if (cpu_state.interrupt_i == 0) {
-        k_puts("DIVIDE BY 0, LOL\n");
-    }
-    else if (cpu_state.interrupt_i == 3) {
-        k_puts("BREAKPOINT, LOL\n");
+    if (_is_exception(cpu_state.interrupt_i)) {
+        vgaterm_setcolour(get_vga_colour_entry(VGA_BLACK, VGA_RED));
+
+        k_puts("FUCK, CPU EXCEPTION\n");
+
+        // TODO: Write proper generic handler
+        if (cpu_state.interrupt_i == 0) {
+            k_puts("DIVIDE BY 0\n");
+        }
+        else if (cpu_state.interrupt_i == 3) {
+            k_puts("BREAKPOINT\n");
+        }
+
+        while (true) {
+            asm("nop");
+        }
     }
 }
