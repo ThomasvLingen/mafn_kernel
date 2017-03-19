@@ -1,43 +1,22 @@
 //
-// Created by mafn on 3/11/17.
+// Created by mafn on 3/19/17.
 //
-#include <kernel/IDT.h>
 
-#include <kernel/print.h>
-#include <kernel/numerics.h>
-#include <kernel/GDT.h>
+#include <kernel/interrupts/ISR.h>
 
-#include <string.h>
 #include <stdbool.h>
+#include <string.h>
+
+#include <kernel/GDT.h>
+#include <kernel/print.h>
 #include <kernel/vgaterm.h>
-#include "vga.h"
+#include "../vga.h"
 
 struct IDT_entry mafn_kernel_idt_entries[MAFN_KERNEL_IDT_GATES];
 struct IDT       mafn_kernel_idt = {
     .limit = sizeof(mafn_kernel_idt_entries) - 1,
     .base = mafn_kernel_idt_entries
 };
-
-void idt_entry_encode(struct IDT_entry* entry, uint32_t base, uint16_t segment_selector, uint8_t type_attr)
-{
-    // Encode base (offset)
-    entry->offset_L = U32_LOW(base);
-    entry->offset_H = U32_HIGH(base);
-
-    // Encode segment selector
-    entry->segment_selector = segment_selector;
-
-    // Encode type / attr
-    entry->type_attr = type_attr;
-
-    // Encode 0
-    entry->zero = 0;
-}
-
-void idt_generate_entry(struct easy_IDT_entry* from, struct IDT_entry* to)
-{
-    idt_entry_encode(to, (uint32_t)from->base, _SEG_OFFSET(from->segment_selector), _TYPE_ATTR(from->type, from->attr));
-}
 
 void mafn_kernel_idt_add_entry(uint16_t index, struct easy_IDT_entry new_entry)
 {

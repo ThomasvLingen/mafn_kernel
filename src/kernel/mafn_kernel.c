@@ -7,7 +7,7 @@
 #include <kernel/print.h>
 #include <kernel/vgaterm.h>
 #include <kernel/GDT.h>
-#include <kernel/IDT.h>
+#include <kernel/interrupts/ISR.h>
 
 void kernel_main()
 {
