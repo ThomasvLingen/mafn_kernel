@@ -8,12 +8,12 @@
 
 #include <kernel/asm/io.h>
 
-static void _pic_slave_write(uint8_t value)
+static void _pic_master_write(uint8_t value)
 {
     outb(PIC_MASTER + PIC_R_DATA, value);
 }
 
-static void _pic_master_write(uint8_t value)
+static void _pic_slave_write(uint8_t value)
 {
     outb(PIC_SLAVE + PIC_R_DATA, value);
 }
