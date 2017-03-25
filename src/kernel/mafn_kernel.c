@@ -21,6 +21,10 @@ void kernel_main()
     mafn_kernel_idt_init();
     k_puts(" [DONE]\n");
 
+    k_puts("Enabling interrupts...");
+    interrupts_enable();
+    k_puts(" [DONE]\n");
+
     k_puts("Entering infinite loop\n");
 
     while (true) {

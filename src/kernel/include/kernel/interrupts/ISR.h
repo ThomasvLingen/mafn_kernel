@@ -11,14 +11,14 @@
 
 #define MAFN_KERNEL_IDT_GATES 256
 
-// 0-31 are taken up by CPU exceptions
-#define MAFN_KERNEL_IRQ_START 32
-
 extern struct IDT_entry mafn_kernel_idt_entries[MAFN_KERNEL_IDT_GATES];
 extern struct IDT       mafn_kernel_idt;
 
 extern void mafn_kernel_idt_add_entry(uint16_t index, struct easy_IDT_entry new_entry);
 extern void mafn_kernel_idt_init();
+
+extern void interrupts_enable();
+extern void interrupts_disable();
 
 struct isr_regs {
     uint32_t gs, fs, es, ds;

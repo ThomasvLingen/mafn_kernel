@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include <kernel/interrupts/PIC.h>
+#include <kernel/interrupts/IRQ.h>
 #include <kernel/GDT.h>
 #include <kernel/print.h>
 #include <kernel/vgaterm.h>
@@ -38,9 +38,6 @@ void mafn_kernel_idt_add_entry(uint16_t index, struct easy_IDT_entry new_entry)
 
 void mafn_kernel_idt_init()
 {
-    // Remap IRQs
-    init_pic(MAFN_KERNEL_IRQ_START);
-
     memset(&mafn_kernel_idt, 0, sizeof(mafn_kernel_idt));
 
     _ADD_EXCEPTION(0);
@@ -56,7 +53,19 @@ void mafn_kernel_idt_init()
     _ADD_EXCEPTION(18);
     _ADD_EXCEPTION(20);
 
+    irq_init();
+
     idt_install(&mafn_kernel_idt);
+}
+
+void interrupts_enable()
+{
+    asm("sti");
+}
+
+void interrupts_disable()
+{
+    asm("cli");
 }
 
 bool _is_exception(uint32_t interrupt_number)
