@@ -4,19 +4,28 @@
 
 #include <stdbool.h>
 
+#include <kernel/print.h>
 #include <kernel/vgaterm.h>
 #include <kernel/GDT.h>
+#include <kernel/interrupts/ISR.h>
 
 void kernel_main()
 {
     vgaterm_init();
 
-    chardev_puts("Booting mafn kernel\n", &vgaterm);
-    chardev_puts("Initting GDT...", &vgaterm);
+    k_puts("Booting mafn kernel\n");
+    k_puts("Installing GDT...");
     mafn_kernel_gdt_init();
-    chardev_puts(" [DONE]\n", &vgaterm);
+    k_puts(" [DONE]\n");
+    k_puts("Installing IDT...");
+    mafn_kernel_idt_init();
+    k_puts(" [DONE]\n");
 
-    chardev_puts("Entering infinite loop\n", &vgaterm);
+    k_puts("Enabling interrupts...");
+    interrupts_enable();
+    k_puts(" [DONE]\n");
+
+    k_puts("Entering infinite loop\n");
 
     while (true) {
         asm("nop");

@@ -7,7 +7,7 @@
 
 #include <stddef.h>
 
-#define __FUNPTR(return_t, name, params) return_t (*name)params
+#include <kernel/funptr.h>
 
 typedef __FUNPTR(void, putc_fn, (char c));
 
