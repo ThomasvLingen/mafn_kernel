@@ -17,5 +17,6 @@ struct chardev {
 
 extern void chardev_write(const char* to_write, size_t size, struct chardev* dev);
 extern void chardev_puts(const char* to_write, struct chardev* dev);
+extern void chardev_putc(const char to_write, struct chardev* dev);
 
 #endif //MAFN_KERNEL_CHARDEV_HPP

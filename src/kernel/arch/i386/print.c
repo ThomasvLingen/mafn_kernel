@@ -9,3 +9,8 @@ void k_puts(const char* str)
 {
     chardev_puts(str, &vgaterm);
 }
+
+void k_putc(const char c)
+{
+    chardev_putc(c, &vgaterm);
+}

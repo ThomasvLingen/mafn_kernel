@@ -16,3 +16,8 @@ void chardev_puts(const char* to_write, struct chardev* dev)
 {
     chardev_write(to_write, strlen(to_write), dev);
 }
+
+void chardev_putc(const char to_write, struct chardev* dev)
+{
+    dev->putc(to_write);
+}

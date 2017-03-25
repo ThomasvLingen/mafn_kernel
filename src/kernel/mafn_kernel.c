@@ -8,6 +8,7 @@
 #include <kernel/vgaterm.h>
 #include <kernel/GDT.h>
 #include <kernel/interrupts/ISR.h>
+#include <kernel/drivers/ps2_keyboard.h>
 
 void kernel_main()
 {
@@ -23,6 +24,10 @@ void kernel_main()
 
     k_puts("Enabling interrupts...");
     interrupts_enable();
+    k_puts(" [DONE]\n");
+
+    k_puts("Initialising PS2 keyboard driver...");
+    ps2_keyboard_init();
     k_puts(" [DONE]\n");
 
     k_puts("Entering infinite loop\n");
