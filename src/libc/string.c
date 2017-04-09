@@ -22,6 +22,7 @@ void* memset(void* ptr, int ch, size_t n)
 
     for (size_t i = 0; i < n; i++) {
         *c_ptr = to_set;
+        c_ptr++;
     }
 
     return ptr;
