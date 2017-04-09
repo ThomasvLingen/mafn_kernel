@@ -20,6 +20,10 @@ IMAGE_PATH = $(PROJECT_ROOT)/image
 
 ISO_PATH = $(BUILD_PATH)/mafn_kernel.iso
 
+# Misc
+QEMU_LOG_PATH = ./LOG_mafn_kernel
+QEMU_CMD = qemu-system-i386 -kernel $(KERNEL_BIN) -m 1024 -serial file:$(QEMU_LOG_PATH)
+
 ifeq ($(ARCH),)
 $(error ARCH not set (does config.mk make sense?))
 endif
@@ -34,10 +38,10 @@ mafn_kernel : libc
 	cp $(KERNEL_BIN) $(PROJECT_ROOT)
 
 qemu_run : mafn_kernel
-	qemu-system-i386 -kernel $(KERNEL_BIN) -m 1024
+	$(QEMU_CMD)
 
 qemu_debug : mafn_kernel
-	qemu-system-i386 -s -S -kernel $(KERNEL_BIN) -m 1024 &
+	$(QEMU_CMD) &
 	gdb -tui $(KERNEL_BIN) -ex "target remote localhost:1234"
 
 iso: mafn_kernel $(ISO_PATH)
@@ -61,4 +65,5 @@ clean:
 	@make clean -C $(LIBC_ROOT)
 	rm -rf $(BUILD_PATH)
 	rm -rf $(IMAGE_PATH)
+	rm -rf $(QEMU_LOG_PATH)
 	rm ./*.bin

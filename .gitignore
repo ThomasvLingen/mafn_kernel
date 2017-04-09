@@ -12,6 +12,9 @@ build/
 # Generated kernel
 *.bin
 
+# Qemu LOG file
+LOG_mafn_kernel
+
 # Compiled Object files
 *.slo
 *.lo
