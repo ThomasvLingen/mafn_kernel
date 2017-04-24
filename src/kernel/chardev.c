@@ -5,14 +5,7 @@
 #include <kernel/chardev.h>
 #include <string.h>
 
-void chardev_write(const char* to_write, size_t size, struct chardev* dev)
+void chardev_putc(const char to_write, struct chardev* dev)
 {
-    for (size_t i = 0; i < size; i++) {
-        dev->putc(to_write[i]);
-    }
-}
-
-void chardev_puts(const char* to_write, struct chardev* dev)
-{
-    chardev_write(to_write, strlen(to_write), dev);
+    dev->putc(to_write);
 }

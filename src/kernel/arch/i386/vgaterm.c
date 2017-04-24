@@ -53,12 +53,10 @@ void vgaterm_putchar(char to_write)
     if (to_write == '\n') {
         _video_mem_column = 0;
         _vgaterm_inc_row();
-
-        return;
+    } else {
+        vgaterm_put(to_write, _video_mem_colour, _video_mem_column, _video_mem_row);
+        _vgaterm_inc_column();
     }
-
-    vgaterm_put(to_write, _video_mem_colour, _video_mem_column, _video_mem_row);
-    _vgaterm_inc_column();
 
     // _column and _row now point to the next position to put a character
     vgaterm_move_cursor_xy(_video_mem_column, _video_mem_row);

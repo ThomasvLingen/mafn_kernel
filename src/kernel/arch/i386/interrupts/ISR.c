@@ -38,7 +38,7 @@ void mafn_kernel_idt_add_entry(uint16_t index, struct easy_IDT_entry new_entry)
 
 void mafn_kernel_idt_init()
 {
-    memset(&mafn_kernel_idt, 0, sizeof(mafn_kernel_idt));
+    memset(mafn_kernel_idt_entries, 0, sizeof(mafn_kernel_idt));
 
     _ADD_EXCEPTION(0);
     _ADD_EXCEPTION(1);
