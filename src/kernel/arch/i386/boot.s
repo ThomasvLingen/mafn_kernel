@@ -27,9 +27,24 @@
 # stack is properly aligned and failure to align the stack will result in
 # undefined behavior.
 .section .bss
+.set MiB_SIZE, 1<<20
+
+.global heap_size
+.set heap_size, MiB_SIZE
+
+# Heap
+.global heap_bottom
+.align 16
+heap_bottom:
+.skip heap_size
+heap_top:
+
+.skip 1024 # Give 1 KiB of space between stack and heap
+
+# Stack
 .align 16
 stack_bottom:
-.skip 16384 # 16 KiB
+.skip MiB_SIZE
 stack_top:
 
 # The linker script specifies _start as the entry point to the kernel and the

@@ -5,10 +5,12 @@
 #ifndef MAFN_KERNEL_FLAT_HEAP_H
 #define MAFN_KERNEL_FLAT_HEAP_H
 
-#include <kernel/numerics.h>
+#include <stdint.h>
 #include <stdbool.h>
 
-#define K_FLAT_HEAP_SIZE MiB_SIZE
+// Defined / allocated in boot.s
+extern void* heap_bottom;
+extern void* heap_size;
 
 struct k_flat_memblock
 {
@@ -22,10 +24,6 @@ struct k_flat_memblock
 };
 
 typedef struct k_flat_memblock k_flat_memblock_t;
-
-extern uint8_t k_flat_heap[K_FLAT_HEAP_SIZE];
-extern uint8_t* k_flat_heap_start;
-extern uint8_t* k_flat_heap_end;
 
 extern void init_k_flat_heap();
 
