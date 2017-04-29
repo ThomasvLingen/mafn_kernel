@@ -41,7 +41,7 @@ qemu_run : mafn_kernel
 	$(QEMU_CMD)
 
 qemu_debug : mafn_kernel
-	$(QEMU_CMD) &
+	$(QEMU_CMD) -s -S &
 	gdb -tui $(KERNEL_BIN) -ex "target remote localhost:1234"
 
 iso: mafn_kernel $(ISO_PATH)
